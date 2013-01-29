@@ -98,9 +98,13 @@ void SkipList::dump(char sep) {
 
 unsigned int SkipList::randHeight() {
     ////////////// Write your code below  ////////////////////////
-
-
-    return 0; //you have to replace this line with your own.
+    // the probability of a node advancing to the next level 
+    // is half
+    int height = 0;
+    while(rand() < RAND_MAX / 2 && level < m_maxHeight) {
+        ++height;
+    }
+    return height;
 }
 
 
