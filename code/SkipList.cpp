@@ -100,8 +100,8 @@ unsigned int SkipList::randHeight() {
     ////////////// Write your code below  ////////////////////////
     // the probability of a node advancing to the next level 
     // is half
-    int height = 0;
-    while(rand() < RAND_MAX / 2 && level < m_maxHeight) {
+    unsigned int height = 0;
+    while(rand() < RAND_MAX / 2 && height < m_maxHeight) {
         ++height;
     }
     return height;
