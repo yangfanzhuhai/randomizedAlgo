@@ -135,12 +135,23 @@ SkipListNode* SkipList::find(SkipListNode* target, const Key& key, unsigned int 
     if (target->nextAtLevel(level) != NULL && *(target->nextAtLevel(level)) < key) {
         countFind++;
     }
-    ////////////// Write your code below  ////////////////////////
-
-
-
-
-    return target;
+    SkipListNode* t = target->nextAtLevel(level);
+	
+    if(t!=NULL && key == *t) {
+		//We found it! Yey!
+		if(key == *t)
+			return t;
+		//Better luck next time:
+		if(*t < key)
+			return find(t, key, level);
+	}
+	
+	if(t==NULL || key > *t) {
+		if(level>0)
+			return find(target, key, level-1);
+		
+	}
+    return NULL;
 }
 
 
