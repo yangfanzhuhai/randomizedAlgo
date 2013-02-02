@@ -1,4 +1,4 @@
-#include "SkipList.hpp"
+ #include "SkipList.hpp"
 /***********************************************************/
 /********************** PROVIDED FUNCTIONS *****************/
 /***********************************************************/
@@ -97,7 +97,6 @@ void SkipList::dump(char sep) {
 /////////////////////////////////////////////////////////////
 
 unsigned int SkipList::randHeight() {
-    ////////////// Write your code below  ////////////////////////
     // the probability of a node advancing to the next level 
     // is half
     unsigned int height = 0;
@@ -115,16 +114,15 @@ int SkipList::add(SkipListNode* target, SkipListNode* newNode, unsigned int leve
     }
     
     SkipListNode* t = target->nextAtLevel(level);
-    if(t == NULL || *newNode  < *target) {
-		if( level < newNode->height() ) {
-			newNode->setNextAtLevel(level, t);
-			target->setNextAtLevel(level, newNode);
+    if (t == NULL || *newNode < *t) {
+        if (level < newNode->height()) {
+		    newNode->setNextAtLevel(level, t);
+		    target->setNextAtLevel(level, newNode);
 		}
-		if( level > 0 )
+		if (level > 0)
 			add(target, newNode, level-1);
 		return 1;
 	}
-    
     return add(t, newNode, level); 
 }
 
@@ -135,23 +133,35 @@ SkipListNode* SkipList::find(SkipListNode* target, const Key& key, unsigned int 
     if (target->nextAtLevel(level) != NULL && *(target->nextAtLevel(level)) < key) {
         countFind++;
     }
+   
     SkipListNode* t = target->nextAtLevel(level);
-	
-    if(t!=NULL && key == *t) {
-		//We found it! Yey!
-		if(key == *t)
-			return t;
-		//Better luck next time:
-		if(*t < key)
-			return find(t, key, level);
-	}
-	
-	if(t==NULL || key > *t) {
-		if(level>0)
-			return find(target, key, level-1);
-		
-	}
-    return NULL;
+    
+    // We have finished searching the entire list
+    if(t == NULL) 
+        return NULL;
+ 
+    // We found it! Yey!
+    if (key == *t) 
+        return t;
+    
+    // Better luck next time:
+    // the node we are searching 
+    // may still be in the current level
+    if(*t < key)
+		return find(t, key, level);
+    
+    // the node we are searching is 
+    // not in the current level
+    
+    // if we have reached level 0 
+    // the key is not found
+    if (level == 0)
+        return NULL;
+        
+    // if the current level is not level 0, 
+    // continue to search in the next level
+    return find(target, key, level-1);
+
 }
 
 
