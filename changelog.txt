@@ -1,0 +1,19 @@
+
+
+correction made by Yangfan:
+line 117
+if (t == NULL || *newNode < *target) {
+
+should be
+
+if (t == NULL || *newNode < *t) {
+
+
+This is because we are inserting the new node after
+target and in front of t. Therefore we should check that 
+newnode is bigger than target and smaller than t.
+
+
+Question:
+When will add() return 0?
+Need to double check when return 0 and when to return 1 for add()

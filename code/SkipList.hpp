@@ -4,6 +4,7 @@
 #include <iostream>
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <vector>
 #include <math.h>
 #include "Key.hpp"

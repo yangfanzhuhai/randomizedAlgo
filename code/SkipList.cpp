@@ -97,13 +97,14 @@ void SkipList::dump(char sep) {
 /////////////////////////////////////////////////////////////
 
 unsigned int SkipList::randHeight() {
-    // the probability of a node advancing to the next level 
-    // is half
-    unsigned int height = 0;
-    while(rand() < RAND_MAX / 2 && height < m_maxHeight) {
-        ++height;
+    unsigned int t = rand();
+    unsigned int j = 2;
+    unsigned int i;
+    for (i = 1; i < m_maxHeight; i++) {
+        if (t > RAND_MAX / j) break;
+        j = j + j;
     }
-    return height;
+    return i;
 }
 
 
@@ -121,7 +122,7 @@ int SkipList::add(SkipListNode* target, SkipListNode* newNode, unsigned int leve
 		}
 		if (level > 0)
 			add(target, newNode, level-1);
-		return 1;
+	    return 1;
 	}
     return add(t, newNode, level); 
 }
@@ -133,35 +134,34 @@ SkipListNode* SkipList::find(SkipListNode* target, const Key& key, unsigned int 
     if (target->nextAtLevel(level) != NULL && *(target->nextAtLevel(level)) < key) {
         countFind++;
     }
-   
-    SkipListNode* t = target->nextAtLevel(level);
-    
+ 
     // We have finished searching the entire list
-    if(t == NULL) 
+    if (target == NULL) 
         return NULL;
  
     // We found it! Yey!
-    if (key == *t) 
-        return t;
+    if (*target == key) 
+        return target;
+        
+    SkipListNode* t = target->nextAtLevel(level);
+    
+    // the node we are searching is 
+    // not in the current level
+    if(t == NULL || *t > key) {
+        // if we have reached level 0 
+        // the key is not found
+        if (level == 0)
+            return NULL;
+            
+        // if the current level is not level 0, 
+        // continue to search in the next level
+        return find(target, key, level - 1);
+    } 
     
     // Better luck next time:
     // the node we are searching 
     // may still be in the current level
-    if(*t < key)
-		return find(t, key, level);
-    
-    // the node we are searching is 
-    // not in the current level
-    
-    // if we have reached level 0 
-    // the key is not found
-    if (level == 0)
-        return NULL;
-        
-    // if the current level is not level 0, 
-    // continue to search in the next level
-    return find(target, key, level-1);
-
+	return find(t, key, level);
 }
 
 
@@ -172,8 +172,34 @@ SkipListNode* SkipList::del(SkipListNode* target, const Key& key, unsigned int l
     if (target->nextAtLevel(level) != NULL && *(target->nextAtLevel(level)) < key) {
         countDelete++;
     }
-    ////////////// Write your code below  ////////////////////////
+    
+    SkipListNode* t = target->nextAtLevel(level);
+    
+    // we have reached the end of the current level
+    if (t == NULL) {
+        if (level == 0) 
+            return NULL;
+        return del(target, key, level - 1);
+    }
 
-
-    return NULL; ///you have to replace this line with your own.
+    // we found the node to be deleted
+    if (*t == key) {
+        // delete it from the current level
+        SkipListNode* nextt = t->nextAtLevel(level);
+        target->setNextAtLevel(level, nextt);
+        
+        // delete it from the next level
+        if (level > 0) 
+            return del(target, key, level - 1);
+            
+        return t;
+    }
+    
+    // the node may still be in the current level
+    if (*t < key) {
+        return del(t, key, level);
+    }
+    
+    // the node is not in the current level
+    return NULL; 
 }
