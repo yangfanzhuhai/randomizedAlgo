@@ -1,6 +1,6 @@
 #include "BloomFilter.hpp"
 const unsigned long BloomFilter::m_pocketSize = LONG_BIT;
-
+//const unsigned int BloomFilter::key_bit_size = 4;
 /***********************************************************/
 /******************* PROVIDED FUNCTIONS ********************/
 /***********************************************************/
@@ -76,13 +76,39 @@ void BloomFilter::dump() {
 /////////////////////////////////////////////////////////////
 /////////////////////  ADD FUNCTIONS ////////////////////////
 /////////////////////////////////////////////////////////////
+/* Some stuff I tested.. But seemed a bit complicated, I don't think
+ * he intends to make us implement this. I'll keep this here for now
+ * and delete it once all gets confirmed:
+void setBit(unsigned long hash, bool bitValue) {
+	unsigned long pocket = hash / m_pocketSize;
+	unsigned long bit = hash % m_pocketSize;
+	m_tickBook[pocket] |= (bitValue<<bit);
+}
+
+int getBit(unsigned long hash) {
+	unsigned long pocket = hash / m_pocketSize;
+	unsigned long bit = hash % m_pocketSize;
+	if ((m_tickBook[pocket]<<bit) == 0)
+		return 0;
+	return 1;
+}
+
+bool checkKey(unsigned long hash) {
+	unsigned long pack_no = hash / (m_pocketSize * key_bit_size);
+	unsigned long pocket = pack_no / m_pocketSize;
+	unsigned long bits = pack_no % m_pocketSize;
+	unsigned long mask = (1<<(bits+1)) - 1;
+	mask <<= (bits * key_bit_size);
+	
+	return ( (mask & m_tickBook[pocked]) != 0);
+}*/
+
+
 
 void BloomFilter::add(const Key& key) {
     countAdd++;
-    ////////////// Write your code below  ////////////////////////
-
-
-
+    ++m_tickBook[hash1(key)];
+    ++m_tickBook[hash2(key)];
 
 }
 
@@ -94,10 +120,9 @@ void BloomFilter::add(const Key& key) {
 
 bool BloomFilter::exist(const Key& key) {
     countFind++;
-    ////////////// Write your code below  ////////////////////////
 
 
-    return false; //you have to replace this line with your own.
+    return m_tickBook[hash1(key)] && m_tickBook[hash2(key)]; //you have to replace this line with your own.
 }
 
 
@@ -107,8 +132,8 @@ bool BloomFilter::exist(const Key& key) {
 
 void BloomFilter::del(const Key& key) {
     countDelete++;
-    ////////////// Write your code below  ////////////////////////
-
+	--m_tickBook[hash1(key)];
+	--m_tickBook[hash2(key)];
 
 }
 

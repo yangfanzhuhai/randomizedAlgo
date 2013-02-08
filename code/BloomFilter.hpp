@@ -39,7 +39,8 @@ private:
     vector<unsigned long> m_tickBook;
     unsigned long m_length; // number of bits in the bloom filter
     unsigned long m_pockets; //the number of pockets
-
+//	unsigned int key_bit_size;
+	
     static const unsigned long m_pocketSize; //bits in each pocket
 };
 
