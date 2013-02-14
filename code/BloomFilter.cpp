@@ -76,50 +76,20 @@ void BloomFilter::dump() {
 /////////////////////////////////////////////////////////////
 /////////////////////  ADD FUNCTIONS ////////////////////////
 /////////////////////////////////////////////////////////////
-/* Some stuff I tested.. But seemed a bit complicated, I don't think
- * he intends to make us implement this. I'll keep this here for now
- * and delete it once all gets confirmed:
-
-}*/
-/*
-void bit_to_one(const unsigned long bit) {
-	unsigned long pocket = bit * LONG_BIT / m_length ;
-	unsigned long bit_position = bit % LONG_BIT;
-	m_tickBook.length();
-	m_tickBook[pocket] |= (1<<bit_position);
-}
-
-void bit_to_zero(const unsigned long bit) {
-	unsigned long pocket = bit * LONG_BIT / m_length ;
-	unsigned long bit_position = bit % LONG_BIT;
-	m_tickBook[pocket] &= ~(1<<bit_position);
-}
-
-bool check_bit(const unsigned long bit) {
-	unsigned long pocket = bit * LONG_BIT / m_length ;
-	unsigned long bit_position = bit % LONG_BIT;
-	return (m_tickBook[pocket] & (1<<bit_position)) != 0;
-}
-*/
-inline unsigned long get_pocket(int bit, int m_length) {
-	return bit * LONG_BIT / m_length;
-}
-
-inline unsigned long get_bit_position(int bit, int m_length) {
-	return bit % LONG_BIT;
-}
 
 void BloomFilter::add(const Key& key) {
     countAdd++;
-    int h1,h2;
+    
+    unsigned long h1;
+    unsigned long h2;
     h1 = hash1(key);
     h2 = hash2(key);
-    m_tickBook[get_pocket(h1, m_length)] |= 
-    (1 << get_bit_position(h1, m_length));
     
-    m_tickBook[get_pocket(h2, m_length)] |= 
-    (1 << get_bit_position(h2, m_length));
-   
+    m_tickBook[h1 / m_pocketSize] |= 
+      (1 << h1 % m_pocketSize);
+    
+    m_tickBook[h2 / m_pocketSize] |= 
+      (1 << h2 % m_pocketSize);
 }
 
 /////////////////////////////////////////////////////////////
@@ -129,13 +99,16 @@ void BloomFilter::add(const Key& key) {
 
 bool BloomFilter::exist(const Key& key) {
     countFind++;
-	int h1,h2;
+    
+    unsigned long h1;
+    unsigned long h2;
     h1 = hash1(key);
     h2 = hash2(key);
-    return ((m_tickBook[get_pocket(h1, m_length)] & 
-			(1<< get_bit_position(h1, m_length) )) !=0) &&
-			((m_tickBook[get_pocket(h2, m_length)] & 
-			(1<< get_bit_position(h2, m_length) )) !=0) ;
+    
+    return ((m_tickBook[h1 / m_pocketSize] & 
+			(1 << h1 % m_pocketSize)) !=0) &&
+			((m_tickBook[h2 / m_pocketSize] & 
+			(1 << h2 % m_pocketSize)) !=0);
 }
 
 
@@ -145,14 +118,17 @@ bool BloomFilter::exist(const Key& key) {
 
 void BloomFilter::del(const Key& key) {
     countDelete++;
-    int h1,h2;
+    
+    unsigned long h1;
+    unsigned long h2;
     h1 = hash1(key);
     h2 = hash2(key);
-    m_tickBook[get_pocket(h1, m_length)] &= 
-    ~(1 << get_bit_position(h1, m_length));
     
-    m_tickBook[get_pocket(h2, m_length)] &= 
-    ~(1 << get_bit_position(h2, m_length));
+    m_tickBook[h1 / m_pocketSize] &= 
+    ~(1 << h1 % m_pocketSize);
+    
+    m_tickBook[h2 / m_pocketSize] &= 
+    ~(1 << h2 % m_pocketSize);
 
 }
 

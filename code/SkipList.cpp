@@ -115,15 +115,21 @@ int SkipList::add(SkipListNode* target, SkipListNode* newNode, unsigned int leve
     }
     
     SkipListNode* t = target->nextAtLevel(level);
+    // We found the position to add the newNode
     if (t == NULL || *newNode < *t) {
-        if (level < newNode->height()) {
+      // Adds the newNode to the current level
+      if (level < newNode->height()) {
 		    newNode->setNextAtLevel(level, t);
 		    target->setNextAtLevel(level, newNode);
-		}
-		if (level > 0)
-			add(target, newNode, level-1);
+		  }
+		  
+		  // Adds the newNode to the next level
+		  if (level > 0)
+			  add(target, newNode, level-1);
+	    
 	    return 1;
-	}
+	  }
+    
     return add(t, newNode, level); 
 }
 

@@ -34,6 +34,7 @@ public:
 private:
     unsigned long hash1(const Key& key);
     unsigned long hash2(const Key& key);
+    
     bool exist(const Key& key);
 
     vector<unsigned long> m_tickBook;
