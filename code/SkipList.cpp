@@ -97,7 +97,7 @@ void SkipList::dump(char sep) {
 /////////////////////////////////////////////////////////////
 
 unsigned int SkipList::randHeight() {
-    unsigned int t = rand();
+    unsigned int t = rand() % RAND_MAX + 1;
     unsigned int j = 2;
     unsigned int i;
     for (i = 1; i < m_maxHeight; i++) {
