@@ -4,6 +4,7 @@
 #include <iostream>
 #include <assert.h>
 #include <vector>
+#include <stdlib.h>
 #include <math.h>
 #include "Key.hpp"
 #include "DataStructure.hpp"

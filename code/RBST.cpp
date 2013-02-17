@@ -81,33 +81,69 @@ int RBST::dump(RBSTNode* target, char sep) {
 
 RBSTNode*  RBST::rightRotate(RBSTNode* target) {
     ////////////// Write your code below  ////////////////////////
-
-    return target;
+	RBSTNode *newRoot, *rightChild;
+	newRoot = rightChild = NULL;
+	
+	//If it doesn't have a right child, tough luck.. Can't rotate!
+	if(!target->right())
+		return NULL;
+	newRoot = target->right();
+	rightChild = newRoot->left();
+	
+	newRoot->setLeft(target);
+	target->setRight(rightChild);
+	
+    return newRoot;
 };
 
 RBSTNode*  RBST::leftRotate(RBSTNode* target) {
     ////////////// Write your code below  ////////////////////////
-
-
-    return target;
+	RBSTNode *newRoot, *leftChild;
+	newRoot = leftChild = NULL;
+	
+	//If it doesn't have a left child, tough luck.. Can't rotate!
+	if(!target->left())
+		return NULL;
+	newRoot = target->left();
+	leftChild = newRoot->right();
+	
+	newRoot->setRight(target);
+	target->setLeft(leftChild);
+	
+    return newRoot;
 };
 
 RBSTNode* RBST::addRoot(RBSTNode* target, const Key& key) {
     countAdd++;
     ////////////// Write your code below  ////////////////////////
-
-
-
-    return target;
+	if(target == NULL)
+		return target;
+	if(key < *target) {
+		target->setLeft(addRoot(target->left(), key));
+		return rightRotate(target);
+	}
+	target->setRight(addRoot(target->right(), key));
+	return leftRotate(target);
 };
 
 
 RBSTNode* RBST::randomAdd(RBSTNode* target, const Key& key) {
     countAdd++;
     ////////////// Write your code below  ////////////////////////
-
-
-    return target;
+	//Arrived to the end of the recursion:
+	if(target == NULL) {
+		++m_size;
+		return target;
+	}
+	int r = rand() % m_size + 1;
+	if(r == 1) {
+		++m_size;
+		return addRoot(target, key);
+	} 
+	if(key < *target)
+		target->setLeft(randomAdd(target->left(), key));
+	 target->setRight(randomAdd(target->right(), key));
+	 return target;
 };
 
 
@@ -117,11 +153,11 @@ RBSTNode* RBST::randomAdd(RBSTNode* target, const Key& key) {
 
 RBSTNode* RBST::find(RBSTNode* target, const Key& key) {
     countFind++;
-    ////////////// Write your code below  ////////////////////////
-
-
-
-    return target;
+    if(target == NULL || *target == key)
+		return target;
+	if(*target > key)
+		return find(target->right(), key); 
+    return find(target->left(), key);
 }
 
 
@@ -133,7 +169,10 @@ RBSTNode* RBST::find(RBSTNode* target, const Key& key) {
 RBSTNode* RBST::del(RBSTNode* target, const Key& key) {
     countDelete++;
     ////////////// Write your code below  ////////////////////////
-
+	if(*target == key && !target->left() && !target->right()) {
+		--m_size;
+		return NULL;
+	}
 
 
 
