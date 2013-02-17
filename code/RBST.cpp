@@ -86,9 +86,9 @@ RBSTNode*  RBST::rightRotate(RBSTNode* target) {
 	
 	//If it doesn't have a right child, tough luck.. Can't rotate!
 	if(!target->right())
-		return NULL;
+		return target;
 	newRoot = target->right();
-	rightChild = newRoot->left();
+	rightChild = target->right()->left();
 	
 	newRoot->setLeft(target);
 	target->setRight(rightChild);
@@ -103,9 +103,9 @@ RBSTNode*  RBST::leftRotate(RBSTNode* target) {
 	
 	//If it doesn't have a left child, tough luck.. Can't rotate!
 	if(!target->left())
-		return NULL;
+		return target;
 	newRoot = target->left();
-	leftChild = newRoot->right();
+	leftChild = target->left()->right();
 	
 	newRoot->setRight(target);
 	target->setLeft(leftChild);
@@ -116,8 +116,11 @@ RBSTNode*  RBST::leftRotate(RBSTNode* target) {
 RBSTNode* RBST::addRoot(RBSTNode* target, const Key& key) {
     countAdd++;
     ////////////// Write your code below  ////////////////////////
-	if(target == NULL)
-		return target;
+	if(target == NULL) {
+		//target = new RBSTNode(key);
+		++m_size;
+		return new RBSTNode(key);
+	}
 	if(key < *target) {
 		target->setLeft(addRoot(target->left(), key));
 		return rightRotate(target);
@@ -133,7 +136,7 @@ RBSTNode* RBST::randomAdd(RBSTNode* target, const Key& key) {
 	//Arrived to the end of the recursion:
 	if(target == NULL) {
 		++m_size;
-		return target;
+		return new RBSTNode(key);
 	}
 	int r = rand() % m_size + 1;
 	if(r == 1) {
@@ -142,7 +145,8 @@ RBSTNode* RBST::randomAdd(RBSTNode* target, const Key& key) {
 	} 
 	if(key < *target)
 		target->setLeft(randomAdd(target->left(), key));
-	 target->setRight(randomAdd(target->right(), key));
+	else
+		target->setRight(randomAdd(target->right(), key));
 	 return target;
 };
 
@@ -155,7 +159,7 @@ RBSTNode* RBST::find(RBSTNode* target, const Key& key) {
     countFind++;
     if(target == NULL || *target == key)
 		return target;
-	if(*target > key)
+	if(key > *target)
 		return find(target->right(), key); 
     return find(target->left(), key);
 }
