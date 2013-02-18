@@ -124,9 +124,11 @@ RBSTNode* RBST::addRoot(RBSTNode* target, const Key& key) {
 	if(key < *target) {
 		target->setLeft(addRoot(target->left(), key));
 		return rightRotate(target);
+	} else if (key > *target) {
+	  target->setRight(addRoot(target->right(), key));
+	  return leftRotate(target);
 	}
-	target->setRight(addRoot(target->right(), key));
-	return leftRotate(target);
+	return target;
 };
 
 
@@ -145,8 +147,9 @@ RBSTNode* RBST::randomAdd(RBSTNode* target, const Key& key) {
 	} 
 	if(key < *target)
 		target->setLeft(randomAdd(target->left(), key));
-	else
+	else if (key > *target) {
 		target->setRight(randomAdd(target->right(), key));
+	 }
 	 return target;
 };
 
