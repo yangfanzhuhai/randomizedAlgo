@@ -174,7 +174,6 @@ RBSTNode* RBST::del(RBSTNode* target, const Key& key) {
     countDelete++;
     ////////////// Write your code below  ////////////////////////
 	if(target == NULL) {
-		--m_size;
 		return NULL;
 	}
 	if(key < *target) {
@@ -191,18 +190,34 @@ RBSTNode* RBST::del(RBSTNode* target, const Key& key) {
 		delete target;
 		target = temp;
 		--m_size;
+		return target;
 	} else if(!target->right()) {
 		temp = target->left();
 		delete target;
 		target = temp;
 		--m_size;
-	} else {
-		temp = target->right();
-		while(temp->left()) {
-			temp = temp->left();
-		}
-		target->setRight(del(target->right(), *temp));
+		return target;
 	}
-    return target;
+	
+	
+	RBSTNode* parent = target->right();
+	temp = parent->left();
+	
+	if(!temp) {
+	  parent->setLeft(target->left());
+	  delete target;
+	  --m_size;
+	  return parent;
+	}
+	
+	while(temp->left()) {
+	  parent = temp;
+		temp = temp->left();
+	}
+	parent->setLeft(temp->right());
+	temp->setLeft(target->left());
+	temp->setRight(target->right());
+	return temp;
+
 };
 

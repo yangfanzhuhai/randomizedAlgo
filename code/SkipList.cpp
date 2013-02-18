@@ -179,10 +179,13 @@ SkipListNode* SkipList::del(SkipListNode* target, const Key& key, unsigned int l
         countDelete++;
     }
     
+    if(target == NULL)
+      return NULL;
+    
     SkipListNode* t = target->nextAtLevel(level);
     
     // we have reached the end of the current level
-    if (t == NULL) {
+    if (t == NULL || key < *t) {
         if (level == 0) 
             return NULL;
         return del(target, key, level - 1);
@@ -201,11 +204,7 @@ SkipListNode* SkipList::del(SkipListNode* target, const Key& key, unsigned int l
         return t;
     }
     
-    // the node may still be in the current level
-    if (*t < key) {
-        return del(t, key, level);
-    }
     
-    // the node is not in the current level
-    return NULL; 
+    // the node may still be in the current level
+    return del(t, key, level);
 }
