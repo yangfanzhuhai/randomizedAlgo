@@ -79,7 +79,7 @@ int RBST::dump(RBSTNode* target, char sep) {
 /////////////////////  ADD FUNCTIONS ////////////////////////
 /////////////////////////////////////////////////////////////
 
-RBSTNode*  RBST::rightRotate(RBSTNode* target) {
+RBSTNode*  RBST::leftRotate(RBSTNode* target) {
     ////////////// Write your code below  ////////////////////////
 	RBSTNode *newRoot, *rightChild;
 	newRoot = rightChild = NULL;
@@ -96,7 +96,7 @@ RBSTNode*  RBST::rightRotate(RBSTNode* target) {
     return newRoot;
 };
 
-RBSTNode*  RBST::leftRotate(RBSTNode* target) {
+RBSTNode*  RBST::rightRotate(RBSTNode* target) {
     ////////////// Write your code below  ////////////////////////
 	RBSTNode *newRoot, *leftChild;
 	newRoot = leftChild = NULL;
